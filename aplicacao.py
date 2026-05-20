@@ -93,7 +93,7 @@ def carregar_arquivos_ia():
         scaler = joblib.load('modelo/scaler_logistic_regression.pkl')
         return modelo_rf, modelo_lr, scaler
     except FileNotFoundError as e:
-        st.error(f"Arquivo não encontrado: {e.filename}. Verifique se os arquivos .pkl estão na mesma pasta do app.py.")
+        st.error(f"Arquivo não encontrado: {e.filename}. Verifique se os arquivos .pkl estão na mesma pasta do aplicacao.py.")
         st.stop()
 
 # ==========================================
