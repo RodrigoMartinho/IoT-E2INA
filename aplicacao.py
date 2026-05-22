@@ -24,8 +24,8 @@ SELECOES_2026 = [
     "Saudi Arabia", "Australia", "Qatar", "Korea Republic", "IR Iran", 
     "Iraq", "Japan", "Jordan", "Uzbekistan",
     # África
-    "South Africa", "Algeria", "Cape Verde Islands", "Côte d'Ivoire", "Egypt", 
-    "Ghana", "Morocco", "Congo DR", "Senegal", "Tunisia",
+    "South Africa", "Algeria", "Cape Verde Islands", "Ivory Coast", "Egypt", 
+    "Ghana", "Morocco", "DR Congo", "Senegal", "Tunisia",
     # Oceania
     "New Zealand"
 ]
