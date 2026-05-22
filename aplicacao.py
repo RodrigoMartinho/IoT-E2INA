@@ -13,7 +13,7 @@ st.set_page_config(page_title="Preditor Copa 2026", page_icon="⚽", layout="cen
 # ==========================================
 SELECOES_2026 = [
     # América do Norte
-    "Canada", "USA", "Mexico", "Curacao", "Haiti", "Panama",
+    "Canada", "USA", "Mexico", "Curaçao", "Haiti", "Panama",
     # América do Sul
     "Argentina", "Brazil", "Colombia", "Ecuador", "Paraguay", "Uruguay",
     # Europa
@@ -25,7 +25,7 @@ SELECOES_2026 = [
     "Iraq", "Japan", "Jordan", "Uzbekistan",
     # África
     "South Africa", "Algeria", "Cape Verde", "Ivory Coast", "Egypt", 
-    "Ghana", "Morocco", "DR Congo", "Senegal", "Tunisia",
+    "Ghana", "Morocco", "Congo DR", "Senegal", "Tunisia",
     # Oceania
     "New Zealand"
 ]
