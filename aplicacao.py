@@ -132,63 +132,62 @@ with col3:
 # ==========================================
 # 5. LÓGICA DE INFERÊNCIA E EXIBIÇÃO
 # ==========================================
-if st.button("Simular Confronto", use_container_width=True):
-    if mandante == visitante:
-        st.error("Por favor, selecione equipes diferentes!")
-    else:
-        try:
-            # 1. Pega as métricas brutas mais recentes
-            ultimo_m = df[df['mandante'] == mandante].iloc[-1]
-            ultimo_v = df[df['visitante'] == visitante].iloc[-1]
-            
-            cenario_bruto = pd.DataFrame({
-                'dif_ranking': [ultimo_m['rank_mandante'] - ultimo_v['rank_visitante']],
-                'ataq_mand': [ultimo_m['ataq_mand']],
-                'def_mand': [ultimo_m['def_mand']],
-                'ataq_vis': [ultimo_v['ataq_vis']],
-                'def_vis': [ultimo_v['def_vis']]
-            })
-            
-            # 2. Roteamento do Modelo
-            if modelo_escolhido == "Random Forest (Árvores de Decisão)":
-                # RF usa os dados puros
-                classe = modelo_rf.predict(cenario_bruto)[0]
-                probs = modelo_rf.predict_proba(cenario_bruto)[0]
-            else:
-                # Regressão Logística OBRIGA a normalização dos dados
-                cenario_normalizado = scaler.transform(cenario_bruto)
-                classe = modelo_lr.predict(cenario_normalizado)[0]
-                probs = modelo_lr.predict_proba(cenario_normalizado)[0]
-            
-            mapa = {0: visitante, 1: "Empate", 2: mandante}
-            vencedor = mapa[classe]
+if mandante == visitante:
+    st.error("Por favor, selecione equipes diferentes!")
+else:
+    try:
+        # 1. Pega as métricas brutas mais recentes
+        ultimo_m = df[df['mandante'] == mandante].iloc[-1]
+        ultimo_v = df[df['visitante'] == visitante].iloc[-1]
+        
+        cenario_bruto = pd.DataFrame({
+            'dif_ranking': [ultimo_m['rank_mandante'] - ultimo_v['rank_visitante']],
+            'ataq_mand': [ultimo_m['ataq_mand']],
+            'def_mand': [ultimo_m['def_mand']],
+            'ataq_vis': [ultimo_v['ataq_vis']],
+            'def_vis': [ultimo_v['def_vis']]
+        })
+        
+        # 2. Roteamento do Modelo
+        if modelo_escolhido == "Random Forest (Árvores de Decisão)":
+            # RF usa os dados puros
+            classe = modelo_rf.predict(cenario_bruto)[0]
+            probs = modelo_rf.predict_proba(cenario_bruto)[0]
+        else:
+            # Regressão Logística OBRIGA a normalização dos dados
+            cenario_normalizado = scaler.transform(cenario_bruto)
+            classe = modelo_lr.predict(cenario_normalizado)[0]
+            probs = modelo_lr.predict_proba(cenario_normalizado)[0]
+        
+        mapa = {0: visitante, 1: "Empate", 2: mandante}
+        vencedor = mapa[classe]
 
-            # 3. Desenha os resultados na tela
-            st.divider()
-            st.subheader(f"Veredicto IA: **{vencedor.upper()}**")
+        # 3. Desenha os resultados na tela
+        st.divider()
+        st.subheader(f"Veredicto IA: **{vencedor.upper()}**")
+        
+        st.write(f"**Vitória do {mandante}:** {probs[2]*100:.1f}%")
+        st.progress(float(probs[2]))
+        
+        st.write(f"**Empate:** {probs[1]*100:.1f}%")
+        st.progress(float(probs[1]))
+        
+        st.write(f"**Vitória do {visitante}:** {probs[0]*100:.1f}%")
+        st.progress(float(probs[0]))
+        
+        # 4. Transparência das estatísticas (Debugging Visual)
+        st.divider()
+        st.write("📊 **Base de Dados Atual:**")
+        
+        col_m, col_v = st.columns(2)
+        with col_m:
+            st.metric(label=f"Rank FIFA - {mandante}", value=int(ultimo_m['rank_mandante']))
+            st.metric(label="Ataque (Média Gols)", value=f"{ultimo_m['ataq_mand']:.2f}")
+            st.metric(label="Defesa (Média Sofridos)", value=f"{ultimo_m['def_mand']:.2f}")
+        with col_v:
+            st.metric(label=f"Rank FIFA - {visitante}", value=int(ultimo_v['rank_visitante']))
+            st.metric(label="Ataque (Média Gols)", value=f"{ultimo_v['ataq_vis']:.2f}")
+            st.metric(label="Defesa (Média Sofridos)", value=f"{ultimo_v['def_vis']:.2f}")
             
-            st.write(f"**Vitória do {mandante}:** {probs[2]*100:.1f}%")
-            st.progress(float(probs[2]))
-            
-            st.write(f"**Empate:** {probs[1]*100:.1f}%")
-            st.progress(float(probs[1]))
-            
-            st.write(f"**Vitória do {visitante}:** {probs[0]*100:.1f}%")
-            st.progress(float(probs[0]))
-            
-            # 4. Transparência das estatísticas (Debugging Visual)
-            st.divider()
-            st.write("📊 **Base de Dados Atual:**")
-            
-            col_m, col_v = st.columns(2)
-            with col_m:
-                st.metric(label=f"Rank FIFA - {mandante}", value=int(ultimo_m['rank_mandante']))
-                st.metric(label="Ataque (Média Gols)", value=f"{ultimo_m['ataq_mand']:.2f}")
-                st.metric(label="Defesa (Média Sofridos)", value=f"{ultimo_m['def_mand']:.2f}")
-            with col_v:
-                st.metric(label=f"Rank FIFA - {visitante}", value=int(ultimo_v['rank_visitante']))
-                st.metric(label="Ataque (Média Gols)", value=f"{ultimo_v['ataq_vis']:.2f}")
-                st.metric(label="Defesa (Média Sofridos)", value=f"{ultimo_v['def_vis']:.2f}")
-                
-        except IndexError:
-            st.error(f"Falta de dados históricos recentes para analisar {mandante} x {visitante}.")
+    except IndexError:
+        st.error(f"Falta de dados históricos recentes para analisar {mandante} x {visitante}.")
